@@ -1,0 +1,6 @@
+{
+  "name": "Topographical Explorer",
+  "description": "Generate 3D stylised elevation maps based on real topological data for any country or city.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
