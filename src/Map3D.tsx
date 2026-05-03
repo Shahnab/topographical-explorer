@@ -431,7 +431,7 @@ export default function Map3D({ data, rivers, states }: Map3DProps) {
       </Canvas>
       
       {/* Auto-rotate Toggle */}
-      <div className="absolute bottom-6 left-6 flex items-center gap-2 pointer-events-auto select-none">
+      <div className="absolute bottom-4 sm:bottom-6 left-3 sm:left-6 flex items-center gap-2 pointer-events-auto select-none">
         <label className="flex items-center cursor-pointer">
           <div className="relative">
             <input 
@@ -443,11 +443,11 @@ export default function Map3D({ data, rivers, states }: Map3DProps) {
             <div className={`block w-10 h-6 rounded-full transition-colors ${autoRotate ? 'bg-[#9f3622]' : 'bg-gray-300'}`}></div>
             <div className={`dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition transform ${autoRotate ? 'translate-x-4' : ''} shadow-sm`}></div>
           </div>
-          <div className="ml-3 text-gray-700 font-medium text-sm">Auto-Rotate</div>
+          <div className="ml-3 text-gray-700 font-medium text-sm hidden sm:block">Auto-Rotate</div>
         </label>
       </div>
 
-      <div className="absolute bottom-6 right-6 pointer-events-none flex flex-col items-end">
+      <div className="absolute bottom-4 sm:bottom-6 right-3 sm:right-6 pointer-events-none flex flex-col items-end">
           <Legend min={data.minElev} max={data.maxElev} />
           <div className="text-gray-500/80 tracking-wide text-xs font-semibold mt-2 mr-1">Concept by Shahnab</div>
       </div>
@@ -466,11 +466,11 @@ function Legend({ min, max }: { min: number, max: number }) {
     });
 
     return (
-        <div className="bg-[#E5E5E5]/90 backdrop-blur-md p-4 shadow-xl border border-black/10 flex flex-col gap-1 w-48 font-sans">
-            <h4 className="font-bold text-sm mb-2 text-gray-800">Mean Elevation</h4>
+        <div className="bg-[#E5E5E5]/90 backdrop-blur-md p-3 sm:p-4 shadow-xl border border-black/10 flex flex-col gap-1 w-36 sm:w-48 font-sans">
+            <h4 className="font-bold text-xs sm:text-sm mb-1 sm:mb-2 text-gray-800">Mean Elevation</h4>
             {items.map((item, i) => (
-                <div key={i} className="flex items-center text-xs text-gray-700">
-                    <div className="w-5 h-5 mr-3 border border-black/20" style={{ backgroundColor: item.color }} />
+                <div key={i} className="flex items-center text-[0.65rem] sm:text-xs text-gray-700">
+                    <div className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 border border-black/20 shrink-0" style={{ backgroundColor: item.color }} />
                     <span className="flex-1">{item.val.toLocaleString()} m</span>
                 </div>
             ))}

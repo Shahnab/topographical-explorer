@@ -178,18 +178,18 @@ export default function App() {
   return (
     <div className="w-full h-screen flex flex-col font-sans bg-[#f5f5f5] text-gray-900 overflow-hidden">
       {/* Header UI */}
-      <header className="absolute top-0 left-0 right-0 z-10 p-6 pointer-events-none flex justify-between items-start">
-         <div className="flex flex-col gap-1.5">
-            <h1 className="text-[2rem] font-bold tracking-[0.18em] text-gray-900/90 uppercase pointer-events-auto" style={{ letterSpacing: '0.2em' }}>
+      <header className="absolute top-0 left-0 right-0 z-10 p-4 sm:p-6 pointer-events-none flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-start">
+         <div className="flex flex-col gap-1">
+            <h1 className="text-[1.35rem] sm:text-[2rem] font-bold tracking-[0.15em] sm:tracking-[0.18em] text-gray-900/90 uppercase pointer-events-auto" style={{ letterSpacing: undefined }}>
                Topographical Explorer
             </h1>
-            <p className="text-[0.68rem] tracking-[0.22em] uppercase text-gray-400 font-normal pointer-events-auto" style={{ letterSpacing: '0.25em' }}>
+            <p className="text-[0.6rem] sm:text-[0.68rem] tracking-[0.18em] sm:tracking-[0.22em] uppercase text-gray-400 font-normal pointer-events-auto">
                3D Elevation · Global Coverage · Mean Grid Height
             </p>
          </div>
          
          {/* Search Box */}
-         <div className="pointer-events-auto bg-white rounded-xl shadow-lg border border-black/5 flex items-center p-2 w-80 relative">
+         <div className="pointer-events-auto bg-white rounded-xl shadow-lg border border-black/5 flex items-center p-2 w-full sm:w-80 relative">
             <select 
               value={query}
               onChange={(e) => {
@@ -253,8 +253,8 @@ export default function App() {
                       Loading overlays...
                    </div>
                 )}
-                <div className="absolute top-32 left-6 pointer-events-none">
-                    <h2 className="text-[5rem] leading-[0.85] font-serif font-black tracking-tighter text-gray-900/10 skew-x-[-5deg]">
+                <div className="absolute top-24 sm:top-32 left-4 sm:left-6 pointer-events-none">
+                    <h2 className="text-[2.5rem] sm:text-[5rem] leading-[0.85] font-serif font-black tracking-tighter text-gray-900/10 skew-x-[-5deg]">
                         {locationName.toUpperCase()}
                     </h2>
                 </div>
