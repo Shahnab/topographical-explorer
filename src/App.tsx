@@ -58,6 +58,40 @@ export default function App() {
          };
       }
 
+      // Filter overseas territories from MultiPolygon countries (e.g. France, Denmark, Portugal)
+      // by keeping only polygons whose bounding-box centroid is within 30° lon / 25° lat
+      // of the Nominatim administrative centroid (which always points at the mainland).
+      if (geojson && geojson.type === 'MultiPolygon') {
+        const centerLat = Number(place.lat);
+        const centerLon = Number(place.lon);
+        const LON_THRESH = 30;
+        const LAT_THRESH = 25;
+
+        const withMetrics = geojson.coordinates.map((poly: number[][][]) => {
+          let loMin = Infinity, loMax = -Infinity, laMin = Infinity, laMax = -Infinity;
+          poly[0].forEach(([lon, lat]: [number, number]) => {
+            loMin = Math.min(loMin, lon); loMax = Math.max(loMax, lon);
+            laMin = Math.min(laMin, lat); laMax = Math.max(laMax, lat);
+          });
+          return {
+            poly,
+            cLon: (loMin + loMax) / 2,
+            cLat: (laMin + laMax) / 2,
+            area: (loMax - loMin) * (laMax - laMin),
+          };
+        });
+
+        const nearby = withMetrics.filter(({ cLon, cLat }) =>
+          Math.abs(cLon - centerLon) <= LON_THRESH && Math.abs(cLat - centerLat) <= LAT_THRESH
+        );
+        // Fallback: if nothing passes the filter, keep the largest polygon
+        const kept = nearby.length > 0 ? nearby : [withMetrics.reduce((a, b) => a.area > b.area ? a : b)];
+
+        geojson = kept.length === 1
+          ? { type: 'Polygon', coordinates: kept[0].poly }
+          : { type: 'MultiPolygon', coordinates: kept.map((k) => k.poly) };
+      }
+
       if (searchQuery.toLowerCase() === 'china') {
           try {
               const res2 = await fetch(`https://nominatim.openstreetmap.org/search?q=Taiwan&format=jsonv2&polygon_geojson=1&limit=1`, {
