@@ -28,9 +28,17 @@ export default function App() {
     setStatesData([]);
     try {
       // 1. Fetch from Nominatim
-      const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(searchQuery)}&format=jsonv2&polygon_geojson=1&limit=1`, {
+      // Use accept-language=en to ensure consistent results regardless of browser/OS locale
+      // (e.g. Safari on a Spanish-locale iPad would otherwise return "Ciudad de México" first
+      // when searching "Mexico"). Fetch up to 5 results and pick the most country-like one.
+      const isKnownCountry = COUNTRIES.some(c => c.toLowerCase() === searchQuery.trim().toLowerCase());
+      const nominatimUrl = isKnownCountry
+        ? `https://nominatim.openstreetmap.org/search?country=${encodeURIComponent(searchQuery)}&format=jsonv2&polygon_geojson=1&limit=5&accept-language=en`
+        : `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(searchQuery)}&format=jsonv2&polygon_geojson=1&limit=5&accept-language=en`;
+      const res = await fetch(nominatimUrl, {
         headers: {
-          'User-Agent': 'TopographicalExplorer/1.0 (Google AI Studio)'
+          'User-Agent': 'TopographicalExplorer/1.0 (Google AI Studio)',
+          'Accept-Language': 'en'
         }
       });
       const data = await res.json();
@@ -39,7 +47,12 @@ export default function App() {
         throw new Error("Location not found");
       }
       
-      const place = data[0];
+      // When searching for a country, prefer the result with the lowest place_rank
+      // (countries = 4, states ≈ 8, cities ≈ 16+) to avoid city-level results
+      // being ranked first due to locale or relevance differences.
+      const place = isKnownCountry
+        ? data.reduce((best: any, cur: any) => (cur.place_rank < best.place_rank ? cur : best), data[0])
+        : data[0];
       
       let locName = place.display_name.split(',')[0];
       if (searchQuery.toLowerCase() === 'china') locName = 'China';
